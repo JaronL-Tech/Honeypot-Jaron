@@ -1,6 +1,7 @@
 # libraries
 import logging
 from logging.handlers import RotatingFileHandler
+import socket
 
 
 # constants
@@ -15,9 +16,17 @@ funnel_handler.setFormatter(logging_format)
 funnel_logger.addHandler(funnel_handler)
 
 
+creds_logger = logging.getLogger("CredsLogger")
+creds_logger.setLevel(logging.INFO)
+creds_handler = RotatingFileHandler('cmd_audits.log',maxBytes=2000, backupCount=5)
+creds_handler.setFormatter(logging_format)
+creds_logger.addHandler(creds_handler)
+
 
 
 # Emulated Shell
+def emulate_shell(channel, client_ip):
+    channel.send(b'bussiness-hostnet1$')
 
 # SSH Server + sockets 
 
