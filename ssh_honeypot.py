@@ -44,7 +44,14 @@ def emulate_shell(channel, client_ip):
 
             elif command.strip() == b'pwd':
                 response = b'\n\\usr\local\\' + b'\r\n'
-
+            elif command.strip() == b'whoami':
+                response = b"\n" + b"corpuser1" + b"\r\n"
+            elif command.strip() == b'ls':
+                response = b'\n' + b"jumpbox1.conf" + b'\r\n'
+            elif command.strip() == b'cat jumpbox1.conf':
+                response = b'\n' + b"Go to deeboodah.com" + b'\r\n'
+            else:
+                response = b'\n' + bytes(command.strip()) + b'\r\n'
 
         channel.send(response)
         channel.send('corporate-jumbbox2$')
