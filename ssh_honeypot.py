@@ -26,7 +26,29 @@ creds_logger.addHandler(creds_handler)
 
 # Emulated Shell
 def emulate_shell(channel, client_ip):
-    channel.send(b'bussiness-hostnet1$')
+    channel.send(b'corporate-jumbbox2$')
+    command = b""
+    while True:
+        char = channel.recv(1)
+        channel.send(char)
+        if not char:
+            channel.close()
+
+
+        command += char
+
+        if char == b'\r':
+            if command.strip() == b'exit':
+                response = b'\n Goodbye!\n'
+                channel.close()
+
+            elif command.strip() == b'pwd':
+                response = b'\n\\usr\local\\' + b'\r\n'
+
+
+        channel.send(response)
+        channel.send('corporate-jumbbox2$')
+        command = b""
 
 # SSH Server + sockets 
 
