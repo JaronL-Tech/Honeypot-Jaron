@@ -10,6 +10,8 @@ import paramiko
 logging.basicConfig(level=logging.INFO)
 logging_format = logging.Formatter('%(message)s')
 
+host_key = 'server.key'
+
 # loggers & logging files
 funnel_logger = logging.getLogger("FunnelLogger")
 funnel_logger.setLevel(logging.INFO)
@@ -61,7 +63,7 @@ def emulate_shell(channel, client_ip):
 
 # SSH Server + sockets 
 
-class server(paramiko.ServerInterface):
+class Server(paramiko.ServerInterface):
     def __init__(self, client_ip, input_username=None, input_password=None):
         
         self.client_ip = client_ip
@@ -94,7 +96,20 @@ class server(paramiko.ServerInterface):
         command =str(command)
         return True
 
+def client_handle(client, addr, username, password):
+    client_ip = addr[0]
+    print(f"{client_ip} has connected to the server.")
+
+
+    try:
+        transport = paramiko.transport()
+        transport.local_version = SSH_BANNER
+        server = Server(client_ip, input_username=username, input_password=password)
+    except:
+        pass
+    finally:
+        pass
 
 # Provisions and SSH based honeypot
-
-
+    
+   
