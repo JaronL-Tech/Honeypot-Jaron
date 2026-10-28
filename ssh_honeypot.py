@@ -6,11 +6,13 @@ import paramiko
 
 
 
+
 # constants
 logging.basicConfig(level=logging.INFO)
 logging_format = logging.Formatter('%(message)s')
+SSH_BANNER = "SSH-2.0-MySSHServer_1.0"
 
-host_key = 'server.key'
+host_key = ''
 
 # loggers & logging files
 funnel_logger = logging.getLogger("FunnelLogger")
@@ -105,10 +107,27 @@ def client_handle(client, addr, username, password):
         transport = paramiko.transport()
         transport.local_version = SSH_BANNER
         server = Server(client_ip, input_username=username, input_password=password)
-    except:
-        pass
+        transport.add_server_key(host_key)
+        transport.start_server(server=server)
+
+        channel = transport.accept(100)
+        if channel is None:
+            print("No channel was created. Closing connection.")
+
+        standard_banner = "Welcome to the The Future\n"
+        channel.send(standard_banner)
+        emulate_shell(channel, client_ip=client_ip)
+
+    except Exception as error:
+        print(error)
+        print("!!!! Error occurred while handling the client connection. Closing connection.")
     finally:
-        pass
+        try:
+            transport.close()
+        except Exception as e:
+            print(error)
+            print("!!!! Error occurred while closing the transport. Connection may not have been closed properly.")
+            client.close()
 
 # Provisions and SSH based honeypot
     
